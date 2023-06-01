@@ -19,4 +19,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="media\ground_tiles.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="media\ground_tiles.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

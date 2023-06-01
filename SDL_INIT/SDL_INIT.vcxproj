@@ -21,6 +21,10 @@
   <ItemGroup>
     <ClCompile Include="01_hello_SDL.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="media\ground_tiles.bmp" />
+    <Image Include="media\ground_tiles.png" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
