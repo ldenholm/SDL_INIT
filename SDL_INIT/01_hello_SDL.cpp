@@ -81,16 +81,31 @@ int main( int argc, char* args[] )
 		printf("Failed to load graphics: %s", SDL_GetError());
 	}
 
-	// Blit the tiles_surface(source) onto the screen_surface(target)
-	SDL_BlitSurface(ground_tiles, NULL, screenSurface, NULL);
+	bool quit = false;
 
-	// Update the window
-	SDL_UpdateWindowSurface(window);
+	SDL_Event e;
 
-	//Hack to get window to stay up
-	SDL_Event e; bool quit = false; while (quit == false) { while (SDL_PollEvent(&e)) { if (e.type == SDL_QUIT) quit = true; } }
+	// Game Loop:
+	while (!quit)
+	{
+		while (SDL_PollEvent(&e) != 0)
+		{
+			// Events are pushed to event stack and processed by polling the event queue.
+			// We ignore all but events typeof(SDL_QUIT) and process these by setting quit flag to true:
+			if (e.type == SDL_QUIT)
+			{
+				quit = true;
+			}
+		}
+
+		// Blit the tiles_surface(source) onto the screen_surface(target)
+		SDL_BlitSurface(ground_tiles, NULL, screenSurface, NULL);
+
+		// Update the window
+		SDL_UpdateWindowSurface(window);
+	}
 
 	closeSDL();
-
+	
 	return 0;
 }
