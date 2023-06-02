@@ -74,7 +74,12 @@ bool loadMedia()
 // Load Individual Image
 SDL_Surface* loadSurface(std::string path)
 {
-	// todo
+	SDL_Surface* loadedSurface = SDL_LoadBMP(path.c_str());
+	if (loadedSurface == NULL)
+	{
+		printf("Unable to load image at path: %s", SDL_GetError());
+	}
+	return loadedSurface;
 }
 
 // Dalloc & Shutdown SDL
