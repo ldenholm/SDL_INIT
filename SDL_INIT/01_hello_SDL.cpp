@@ -1,14 +1,31 @@
 #include <SDL.h>
 #include <stdio.h>
+#include <string>
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
 // GLOBALS (nb. Allowing this anti pattern due to this being a single file program)
+
 SDL_Window* window = NULL;
 SDL_Surface* screenSurface = NULL;
 SDL_Surface* ground_tiles = NULL;
+// Contains array of pointers to surfaces each representing the img to render upon corresponding key press
+SDL_Surface* keyPressSurfaces[KEY_PRESS_SURFACE_TOTAL];
+// Current rendered image
+SDL_Surface* currentSurface = NULL;
+
+// Enums
+enum KeyPressSurfaces
+{
+	KEY_PRESS_SURFACE_DEFAULT,
+	KEY_PRESS_SURFACE_UP,
+	KEY_PRESS_SURFACE_DOWN,
+	KEY_PRESS_SURFACE_LEFT,
+	KEY_PRESS_SURFACE_RIGHT,
+	KEY_PRESS_SURFACE_TOTAL
+};
 
 // Methods
 
@@ -37,7 +54,7 @@ bool init()
 	return success;
 }
 
-// Load bmp
+// Load BMP
 bool loadMedia()
 {
 	bool success = false;
@@ -54,6 +71,12 @@ bool loadMedia()
 	return success;
 }
 
+// Load Individual Image
+SDL_Surface* loadSurface(std::string path)
+{
+	// todo
+}
+
 // Dalloc & Shutdown SDL
 void closeSDL()
 {
@@ -66,6 +89,7 @@ void closeSDL()
 
 	SDL_Quit;
 }
+
 
 int main( int argc, char* args[] )
 {
