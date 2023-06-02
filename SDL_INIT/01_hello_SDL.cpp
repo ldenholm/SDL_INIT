@@ -7,7 +7,7 @@ const int SCREEN_HEIGHT = 480;
 
 // GLOBALS (nb. Allowing this anti pattern due to this being a single file program)
 SDL_Window* window = NULL;
-SDL_Surface* screenBackground= NULL;
+SDL_Surface* screenSurface = NULL;
 SDL_Surface* ground_tiles = NULL;
 
 // Methods
@@ -19,9 +19,9 @@ bool init()
 	{
 		window = SDL_CreateWindow("Rendering an img via CPU", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 		success = true;
-		if (!(window == NULL))
+		if (window != NULL)
 		{
-			screenBackground = SDL_GetWindowSurface(window);
+			screenSurface = SDL_GetWindowSurface(window);
 		}
 		else
 		{
@@ -37,12 +37,13 @@ bool init()
 	return success;
 }
 
+// Load bmp
 bool loadMedia()
 {
 	bool success = false;
 	char tile_path[] = "media/ground_tiles.bmp";
 	ground_tiles = SDL_LoadBMP(tile_path);
-	if (!(ground_tiles == NULL))
+	if (ground_tiles != NULL)
 	{
 		success = true;
 	}
@@ -53,43 +54,43 @@ bool loadMedia()
 	return success;
 }
 
-// Free media & Shutdown SDL
-void closeSDL();
+// Dalloc & Shutdown SDL
+void closeSDL()
+{
+	SDL_FreeSurface(ground_tiles);
+	ground_tiles = NULL;
+	
+	// this also destroys the screen surface
+	SDL_DestroyWindow(window);
+	window = NULL;
+
+	SDL_Quit;
+}
 
 int main( int argc, char* args[] )
 {
 	//Initialize SDL
-	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+	if (!init())
 	{
-		
-	}
-	else
-	{
-		//Create window
-		window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
-		if( window != NULL )
-		{
-			//Get window surface
-			screenSurface = SDL_GetWindowSurface(window);
-
-			//Fill the surface white
-			SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
-
-			//Update the surface
-			SDL_UpdateWindowSurface(window);
-
-			//Hack to get window to stay up
-			SDL_Event e;
-			bool quit = false; while (quit == false) { while (SDL_PollEvent(&e)) { if (e.type == SDL_QUIT) quit = true; } }
-		}
-		else { printf("Window could not be created! SDL_Error: %s\n", SDL_GetError()); }
+		printf("Failed to initialize: %s", SDL_GetError());
 	}
 
-	//Destroy window
-	SDL_DestroyWindow( window );
+	// Load media
+	if (!loadMedia())
+	{
+		printf("Failed to load graphics: %s", SDL_GetError());
+	}
 
-	//Quit SDL subsystems
-	SDL_Quit();
+	// Blit the tiles_surface(source) onto the screen_surface(target)
+	SDL_BlitSurface(ground_tiles, NULL, screenSurface, NULL);
+
+	// Update the window
+	SDL_UpdateWindowSurface(window);
+
+	//Hack to get window to stay up
+	SDL_Event e; bool quit = false; while (quit == false) { while (SDL_PollEvent(&e)) { if (e.type == SDL_QUIT) quit = true; } }
+
+	closeSDL();
 
 	return 0;
 }
