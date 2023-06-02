@@ -25,9 +25,6 @@
     <Image Include="media\ground_tiles.bmp" />
     <Image Include="media\ground_tiles.png" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Readme.md" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
