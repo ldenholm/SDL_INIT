@@ -136,73 +136,73 @@ void closeSDL()
 }
 
 
-int main( int argc, char* args[] )
-{
-	//Initialize SDL
-	if (!init())
-	{
-		printf("Failed to initialize: %s", SDL_GetError());
-	}
-
-	// Load media
-	if (!loadMedia())
-	{
-		printf("Failed to load graphics: %s", SDL_GetError());
-	}
-
-	bool quit = false;
-
-	SDL_Event e;
-
-	// Default surface
-	currentSurface = keyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT];
-
-	// Game Loop:
-	while (!quit)
-	{
-		while (SDL_PollEvent(&e) != 0)
-		{
-			// Events are pushed to event stack and processed by polling the event queue.
-			// We ignore all but events typeof(SDL_QUIT) and process these by setting quit flag to true:
-			if (e.type == SDL_QUIT)
-			{
-				quit = true;
-			}
-			else if (e.type == SDL_KEYDOWN)
-			{
-				switch (e.key.keysym.sym)
-				{
-				case SDLK_UP:
-					currentSurface = keyPressSurfaces[KEY_PRESS_SURFACE_UP];
-					break;
-
-				case SDLK_DOWN:
-					currentSurface = keyPressSurfaces[KEY_PRESS_SURFACE_DOWN];
-					break;
-
-				case SDLK_LEFT:
-					currentSurface = keyPressSurfaces[KEY_PRESS_SURFACE_LEFT];
-					break;
-
-				case SDLK_RIGHT:
-					currentSurface = keyPressSurfaces[KEY_PRESS_SURFACE_RIGHT];
-					break;
-
-				default:
-					currentSurface = keyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT];
-					break;
-				}
-			}
-		}
-
-		// Blit the tiles_surface(source) onto the screen_surface(target)
-		SDL_BlitSurface(currentSurface, NULL, screenSurface, NULL);
-
-		// Update the window
-		SDL_UpdateWindowSurface(window);
-	}
-
-	closeSDL();
-	
-	return 0;
-}
+//int main( int argc, char* args[] )
+//{
+//	//Initialize SDL
+//	if (!init())
+//	{
+//		printf("Failed to initialize: %s", SDL_GetError());
+//	}
+//
+//	// Load media
+//	if (!loadMedia())
+//	{
+//		printf("Failed to load graphics: %s", SDL_GetError());
+//	}
+//
+//	bool quit = false;
+//
+//	SDL_Event e;
+//
+//	// Default surface
+//	currentSurface = keyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT];
+//
+//	// Game Loop:
+//	while (!quit)
+//	{
+//		while (SDL_PollEvent(&e) != 0)
+//		{
+//			// Events are pushed to event stack and processed by polling the event queue.
+//			// We ignore all but events typeof(SDL_QUIT) and process these by setting quit flag to true:
+//			if (e.type == SDL_QUIT)
+//			{
+//				quit = true;
+//			}
+//			else if (e.type == SDL_KEYDOWN)
+//			{
+//				switch (e.key.keysym.sym)
+//				{
+//				case SDLK_UP:
+//					currentSurface = keyPressSurfaces[KEY_PRESS_SURFACE_UP];
+//					break;
+//
+//				case SDLK_DOWN:
+//					currentSurface = keyPressSurfaces[KEY_PRESS_SURFACE_DOWN];
+//					break;
+//
+//				case SDLK_LEFT:
+//					currentSurface = keyPressSurfaces[KEY_PRESS_SURFACE_LEFT];
+//					break;
+//
+//				case SDLK_RIGHT:
+//					currentSurface = keyPressSurfaces[KEY_PRESS_SURFACE_RIGHT];
+//					break;
+//
+//				default:
+//					currentSurface = keyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT];
+//					break;
+//				}
+//			}
+//		}
+//
+//		// Blit the tiles_surface(source) onto the screen_surface(target)
+//		SDL_BlitSurface(currentSurface, NULL, screenSurface, NULL);
+//
+//		// Update the window
+//		SDL_UpdateWindowSurface(window);
+//	}
+//
+//	closeSDL();
+//	
+//	return 0;
+//}

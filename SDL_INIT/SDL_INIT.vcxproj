@@ -20,6 +20,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="01_hello_SDL.cpp" />
+    <ClCompile Include="Render.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\vclib\SDL2-2.26.5\include;C:\vclib\SDL2_image-2.6.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\Downloads\04_key_presses\down.bmp" />
@@ -27,8 +30,10 @@
     <Image Include="..\..\..\..\Downloads\04_key_presses\press.bmp" />
     <Image Include="..\..\..\..\Downloads\04_key_presses\right.bmp" />
     <Image Include="..\..\..\..\Downloads\04_key_presses\up.bmp" />
+    <Image Include="media\Background_0.png" />
     <Image Include="media\ground_tiles.bmp" />
     <Image Include="media\avatar.bmp" />
+    <Image Include="media\Tiles.png" />
     <Image Include="media\title.bmp" />
     <Image Include="media\walk_east.bmp" />
     <Image Include="media\walk_west.bmp" />
