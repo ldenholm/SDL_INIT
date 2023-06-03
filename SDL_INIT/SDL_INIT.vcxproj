@@ -22,8 +22,16 @@
     <ClCompile Include="01_hello_SDL.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\Downloads\04_key_presses\down.bmp" />
+    <Image Include="..\..\..\..\Downloads\04_key_presses\left.bmp" />
+    <Image Include="..\..\..\..\Downloads\04_key_presses\press.bmp" />
+    <Image Include="..\..\..\..\Downloads\04_key_presses\right.bmp" />
+    <Image Include="..\..\..\..\Downloads\04_key_presses\up.bmp" />
     <Image Include="media\ground_tiles.bmp" />
-    <Image Include="media\ground_tiles.png" />
+    <Image Include="media\avatar.bmp" />
+    <Image Include="media\title.bmp" />
+    <Image Include="media\walk_east.bmp" />
+    <Image Include="media\walk_west.bmp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
