@@ -18,6 +18,9 @@
     <ClCompile Include="01_hello_SDL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="media\ground_tiles.bmp">
@@ -51,6 +54,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="media\attack.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="media\Background_0.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="media\Tiles.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
