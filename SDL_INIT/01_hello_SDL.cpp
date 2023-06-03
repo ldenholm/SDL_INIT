@@ -1,4 +1,5 @@
 #include <SDL.h>
+#include <SDL_image.h>
 #include <stdio.h>
 #include <string>
 
@@ -39,6 +40,13 @@ bool init()
 		if (window)
 		{
 			screenSurface = SDL_GetWindowSurface(window);
+			// Initialize png loading
+			int imgFlags = IMG_INIT_PNG;
+			if (!(IMG_Init(imgFlags) & imgFlags))
+			{
+				printf("SDL Img lib did not initialize. SDL Error: %s\n", IMG_GetError());
+				success = false;
+			}
 		}
 		else
 		{
@@ -59,7 +67,7 @@ SDL_Surface* loadSurface(std::string path)
 {
 	SDL_Surface* optimizedSurface = NULL;
 
-	SDL_Surface* loadedSurface = SDL_LoadBMP(path.c_str());
+	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
 	if (!loadedSurface)
 	{
 		printf("Unable to load image: %s\n SDL Error: %s", path.c_str(), SDL_GetError());
@@ -100,7 +108,7 @@ bool loadMedia()
 	}
 
 	// KeyDown
-	path = "media/title.bmp";
+	path = "media/attack.png";
 	keyPressSurfaces[KEY_PRESS_SURFACE_DOWN] = loadSurface(path);
 	if (!keyPressSurfaces[KEY_PRESS_SURFACE_DOWN])
 	{
@@ -140,6 +148,7 @@ void closeSDL()
 	}
 
 	SDL_FreeSurface(currentSurface);
+	currentSurface = NULL;
 	
 	// this also destroys the screen surface
 	SDL_DestroyWindow(window);

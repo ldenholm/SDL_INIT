@@ -50,5 +50,8 @@
     <Image Include="..\..\..\..\Downloads\04_key_presses\right.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="media\attack.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
