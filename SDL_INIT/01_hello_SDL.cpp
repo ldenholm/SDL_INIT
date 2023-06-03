@@ -3,8 +3,8 @@
 #include <string>
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDTH = 1920;
+const int SCREEN_HEIGHT = 1080;
 
 // Enums
 enum KeyPressSurfaces
@@ -36,7 +36,7 @@ bool init()
 	{
 		window = SDL_CreateWindow("Rendering an img via CPU", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 		success = true;
-		if (window != NULL)
+		if (window)
 		{
 			screenSurface = SDL_GetWindowSurface(window);
 		}
@@ -57,59 +57,70 @@ bool init()
 // Load Individual Image
 SDL_Surface* loadSurface(std::string path)
 {
+	SDL_Surface* optimizedSurface = NULL;
+
 	SDL_Surface* loadedSurface = SDL_LoadBMP(path.c_str());
-	if (loadedSurface == NULL)
+	if (!loadedSurface)
 	{
-		printf("Unable to load image at path: %s", SDL_GetError());
+		printf("Unable to load image: %s\n SDL Error: %s", path.c_str(), SDL_GetError());
 	}
-	return loadedSurface;
+	else
+	{
+		optimizedSurface = SDL_ConvertSurface(loadedSurface, screenSurface->format, 0);
+		if (!optimizedSurface)
+		{
+			printf("Image stretch SDL Error: %s", SDL_GetError());
+		}
+		SDL_FreeSurface(loadedSurface);
+	}
+	return optimizedSurface;
 }
 
 // Load assets
 bool loadMedia()
 {
 	bool success = true;
-	std::string path = "media/press.bmp";
+	std::string path = "media/ground_tiles.bmp";
 
 	// Load Default
 	keyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT] = loadSurface(path);
-	if (keyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT] == NULL)
+	if (!keyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT])
 	{
 		success = false;
 		printf("Unable to load image: %s", path.c_str());
 	}
 
 	// KeyUp
-	path = "media/up.bmp";
+	path = "media/avatar.bmp";
 	keyPressSurfaces[KEY_PRESS_SURFACE_UP] = loadSurface(path);
-	if (keyPressSurfaces[KEY_PRESS_SURFACE_UP] == NULL)
+	if (!keyPressSurfaces[KEY_PRESS_SURFACE_UP])
 	{
 		success = false;
 		printf("Unable to load image: %s", path.c_str());
 	}
 
 	// KeyDown
-	path = "media/down.bmp";
+	path = "media/title.bmp";
 	keyPressSurfaces[KEY_PRESS_SURFACE_DOWN] = loadSurface(path);
-	if (keyPressSurfaces[KEY_PRESS_SURFACE_DOWN] == NULL)
+	if (!keyPressSurfaces[KEY_PRESS_SURFACE_DOWN])
 	{
 		success = false;
 		printf("Unable to load image: %s", path.c_str());
 	}
 
 	// KeyLeft
-	path = "media/left.bmp";
+	path = "media/walk_west.bmp";
 	keyPressSurfaces[KEY_PRESS_SURFACE_LEFT] = loadSurface(path);
-	if (keyPressSurfaces[KEY_PRESS_SURFACE_LEFT] == NULL)
+	if (!keyPressSurfaces[KEY_PRESS_SURFACE_LEFT])
 	{
 		success = false;
 		printf("Unable to load image: %s", path.c_str());
 	}
 
 	// KeyRight
-	path = "media/right.bmp";
+	path = "media/walk_east.bmp";
 	keyPressSurfaces[KEY_PRESS_SURFACE_RIGHT] = loadSurface(path);
-	if (keyPressSurfaces[KEY_PRESS_SURFACE_RIGHT] == NULL)
+	if (!keyPressSurfaces[KEY_PRESS_SURFACE_RIGHT])
 	{
 		success = false;
 		printf("Unable to load image: %s", path.c_str());
@@ -122,11 +133,13 @@ bool loadMedia()
 void closeSDL()
 {
 	
-	for (int i = 0; i < KEY_PRESS_SURFACE_TOTAL; ++i)
+	for (int i = 0; i < KEY_PRESS_SURFACE_TOTAL; i++)
 	{
 		SDL_FreeSurface(keyPressSurfaces[i]);
 		keyPressSurfaces[i] = NULL;
 	}
+
+	SDL_FreeSurface(currentSurface);
 	
 	// this also destroys the screen surface
 	SDL_DestroyWindow(window);
@@ -138,6 +151,7 @@ void closeSDL()
 
 int main( int argc, char* args[] )
 {
+
 	//Initialize SDL
 	if (!init())
 	{
@@ -195,8 +209,14 @@ int main( int argc, char* args[] )
 			}
 		}
 
-		// Blit the tiles_surface(source) onto the screen_surface(target)
-		SDL_BlitSurface(currentSurface, NULL, screenSurface, NULL);
+		// Stretch Rectangle
+		SDL_Rect stretchRect{};
+		stretchRect.x = 0;
+		stretchRect.y = 0;
+		stretchRect.w = SCREEN_WIDTH;
+		stretchRect.h = SCREEN_HEIGHT;
+
+		SDL_BlitScaled(currentSurface, NULL, screenSurface, &stretchRect);
 
 		// Update the window
 		SDL_UpdateWindowSurface(window);
