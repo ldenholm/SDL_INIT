@@ -23,7 +23,31 @@
     <Image Include="media\ground_tiles.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="media\ground_tiles.png">
+    <Image Include="media\avatar.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="media\title.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="media\walk_east.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="media\walk_west.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Downloads\04_key_presses\up.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Downloads\04_key_presses\down.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Downloads\04_key_presses\left.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Downloads\04_key_presses\press.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Downloads\04_key_presses\right.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
