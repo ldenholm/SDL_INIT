@@ -1,6 +1,6 @@
 # :palm_tree: SDL_INIT Learning Simple Direct Media Layer :palm_tree:
 
-This project serves as a playground for me to experiment and learn the SDL graphics API.
+This project serves as a playground for me to experiment with and learn the SDL graphics API.
 
 
 ## The plan
