@@ -53,6 +53,10 @@ bool init()
 
 SDL_Texture* loadTexture(std::string path)
 {
+	/*
+	* Surfaces are stored in CPU memory. Software rendering = CPU
+	* Textures are created and uploaded to GPU memory for performance. Hardware rendering = GPU
+	*/
 	SDL_Texture* newTexture = NULL;
 	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
 
@@ -68,6 +72,10 @@ SDL_Texture* loadTexture(std::string path)
 		printf("Error creating texture: %s", SDL_GetError());
 	}
 
+	/*
+	* Free the surface because the textures have
+	* successfully loaded into GPU memory.
+	*/
 	SDL_FreeSurface(loadedSurface);
 
 	return newTexture;
@@ -101,36 +109,37 @@ void cleanup()
 	SDL_Quit();
 }
 
-int main(int argc, char* args[])
-{
-	if (!init())
-	{
-		printf("Failed to initialize: %s", SDL_GetError());
-	}
-
-	if (!loadMedia())
-	{
-		printf("Failed to load graphics: %s", SDL_GetError());
-	}
-
-	bool running = true;
-	SDL_Event e;
-
-	while (running)
-	{
-		while (SDL_PollEvent(&e) != 0)
-		{
-			if (e.type == SDL_QUIT)
-			{
-				running = false;
-			}
-		}
-
-		SDL_RenderClear(gRenderer);
-		SDL_RenderCopy(gRenderer, gCurrent, NULL, NULL);
-
-		SDL_RenderPresent(gRenderer);
-	}
-
-	return 0;
-}
+//int main(int argc, char* args[])
+//{
+//	if (!init())
+//	{
+//		printf("Failed to initialize: %s", SDL_GetError());
+//	}
+//
+//	if (!loadMedia())
+//	{
+//		printf("Failed to load graphics: %s", SDL_GetError());
+//	}
+//
+//	bool running = true;
+//	SDL_Event e;
+//
+//	while (running)
+//	{
+//		while (SDL_PollEvent(&e) != 0)
+//		{
+//			if (e.type == SDL_QUIT)
+//			{
+//				running = false;
+//			}
+//		}
+//
+//		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+//		SDL_RenderClear(gRenderer);
+//		//SDL_RenderCopy(gRenderer, gCurrent, NULL, NULL);
+//
+//		//SDL_RenderPresent(gRenderer);
+//	}
+//
+//	return 0;
+//}
