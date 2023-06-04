@@ -1,5 +1,4 @@
 #include "Game.h"
-#include <vector>
 
 
 // Public Members
@@ -94,14 +93,26 @@ void Game::GenerateOutput()
 	// blue w/ 100% opacity.
 	SDL_SetRenderDrawColor(mRenderer, 237, 194, 242, 255);
 	SDL_RenderClear(mRenderer);
+	
+	// Create walls
 	SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
 	const int thickness = 15;
-	// Create walls
-	std::vector<SDL_Rect> walls{ {0, 0, 1024, thickness}, {0, (768 - thickness), 1024, thickness}, {0, 0, thickness, 768}, {(1024 - thickness), 0, thickness, 768} };
-	for (SDL_Rect wall : walls)
-	{
-		SDL_RenderFillRect(mRenderer, &wall);
-	}
-	
+	SDL_Rect wall = { 0, 0, 1024, thickness };
+	SDL_RenderFillRect(mRenderer, &wall);
+	// bottom
+	wall.y = (768 - thickness);
+	SDL_RenderFillRect(mRenderer, &wall);
+	// left
+	wall.y = 0;
+	wall.w = thickness;
+	wall.h = 768;
+	SDL_RenderFillRect(mRenderer, &wall);
+	// right
+	wall.x = (1024 - thickness);
+	SDL_RenderFillRect(mRenderer, &wall);
+
 	SDL_RenderPresent(mRenderer);
 }
+
+
+// {0, 0, 1024, thickness}, {0, (768 - thickness), 1024, thickness}, {0, 0, thickness, 768}, {(1024 - thickness), 0, thickness, 768} };
