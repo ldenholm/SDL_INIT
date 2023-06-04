@@ -9,6 +9,7 @@ public:
 
 private:
 	SDL_Window* mWindow;
+	SDL_Renderer* mRenderer;
 	bool mIsRunning;
 	
 	// Helper functions for game loop:

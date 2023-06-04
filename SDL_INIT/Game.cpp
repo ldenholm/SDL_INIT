@@ -7,6 +7,7 @@ Game::Game()
 {
 	mIsRunning = true;
 	mWindow = NULL;
+	mRenderer = NULL;
 }
 
 bool Game::Initialize()
@@ -23,6 +24,15 @@ bool Game::Initialize()
 		SDL_Log("Error creating windows: %s", SDL_GetError());
 		return false;
 	}
+
+	// Enable GPU rendering and vsync
+	mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	if (!mRenderer)
+	{
+		SDL_Log("Error initializing renderer: %s", SDL_GetError());
+		return false;
+	}
+
 	return true;
 }
 
@@ -39,6 +49,7 @@ void Game::RunLoop()
 void Game::Shutdown()
 {
 	SDL_DestroyWindow(mWindow);
+	SDL_DestroyRenderer(mRenderer);
 	SDL_Quit();
 }
 
@@ -72,5 +83,15 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
+	/*
+	* Graphics are an output, here are the steps:
+	* - clear the back buffer to a color (the game's current buffer).
+	* - draw the entire scene on the back buffer.
+	* - swap the front and back buffers for display to show new scene.
+	*/
 
+	// blue w/ 100% opacity.
+	SDL_SetRenderDrawColor(mRenderer, 237, 194, 242, 255);
+	SDL_RenderClear(mRenderer);
+	SDL_RenderPresent(mRenderer);
 }
