@@ -8,6 +8,11 @@ Game::Game()
 	mIsRunning = true;
 	mWindow = NULL;
 	mRenderer = NULL;
+	mBallPos.x = 512;
+	mBallPos.y = 384;
+	mPaddlePos.x = 0;
+	mPaddlePos.y = 384;
+	mTicksCount = 0;
 }
 
 bool Game::Initialize()
@@ -78,7 +83,23 @@ void Game::ProcessInput()
 
 void Game::UpdateGame()
 {
+	// frame limiting ensuring ~16.6ms is used per frame:
+	while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 16));
 
+	// Delta time = curentTicks - lastFrameTicks
+	// getTicks gives ms so 1s/1000ms to convert to s
+	float deltaTime = (SDL_GetTicks() - mTicksCount) / 1000.0f;
+	
+	// limit max deltaTime so we can debug and not cause the simulation to jump:
+	if (deltaTime > 0.05f)
+	{
+		deltaTime = 0.05f;
+	}
+	
+	// Update tick counts
+	mTicksCount = SDL_GetTicks();
+
+	// Todo: upd game objects in game world as a function of deltaTime
 }
 
 void Game::GenerateOutput()
@@ -102,17 +123,30 @@ void Game::GenerateOutput()
 	// bottom
 	wall.y = (768 - thickness);
 	SDL_RenderFillRect(mRenderer, &wall);
-	// left
+	// right
+	wall.x = (1024 - thickness);
 	wall.y = 0;
 	wall.w = thickness;
 	wall.h = 768;
 	SDL_RenderFillRect(mRenderer, &wall);
-	// right
-	wall.x = (1024 - thickness);
-	SDL_RenderFillRect(mRenderer, &wall);
+
+	// Draw Ball (for x&y / by half of thickness to account for its own width/height.
+	SDL_Rect ball = {
+		static_cast<int>(mBallPos.x - thickness / 2),
+		static_cast<int>(mBallPos.y - thickness / 2),
+		thickness,
+		thickness
+	};
+	SDL_RenderFillRect(mRenderer, &ball);
+
+	// Draw player1 paddle
+	SDL_Rect lPlayerPaddle = {
+		0,
+		static_cast<int>(mPaddlePos.y - 64),
+		thickness,
+		128
+	};
+	SDL_RenderFillRect(mRenderer, &lPlayerPaddle);
 
 	SDL_RenderPresent(mRenderer);
 }
-
-
-// {0, 0, 1024, thickness}, {0, (768 - thickness), 1024, thickness}, {0, 0, thickness, 768}, {(1024 - thickness), 0, thickness, 768} };
