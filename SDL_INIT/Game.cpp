@@ -1,18 +1,25 @@
 #include "Game.h"
 
+// Globals
+
+const int SCREEN_WIDTH = 1024;
+const int SCREEN_HEIGHT = 768;
+const int thickness = 15;
+const float paddleH = 128.0f;
 
 // Public Members
-// CTOR
+
 Game::Game()
 {
 	mIsRunning = true;
 	mWindow = NULL;
 	mRenderer = NULL;
-	mBallPos.x = 512;
-	mBallPos.y = 384;
-	mPaddlePos.x = 0;
-	mPaddlePos.y = 384;
+	mBallPos.x = 512.0f;
+	mBallPos.y = 384.0f;
+	mPaddlePos.x = 0.0f;
+	mPaddlePos.y = 384.0f;
 	mTicksCount = 0;
+	mLPaddleDir = 0;
 }
 
 bool Game::Initialize()
@@ -23,7 +30,7 @@ bool Game::Initialize()
 		return false;
 	}
 
-	mWindow = SDL_CreateWindow("Early Days v1", 200, 200, 1024, 768, 0);
+	mWindow = SDL_CreateWindow("Early Days v1", 200, 200, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
 	if (!mWindow)
 	{
 		SDL_Log("Error creating windows: %s", SDL_GetError());
@@ -62,6 +69,9 @@ void Game::Shutdown()
 
 void Game::ProcessInput()
 {
+	// Capture keyboard state
+	const Uint8* state = SDL_GetKeyboardState(NULL);
+
 	// Handle events in the queue:
 	SDL_Event e;
 	while (SDL_PollEvent(&e))
@@ -74,7 +84,10 @@ void Game::ProcessInput()
 		}
 	}
 
-	const Uint8* state = SDL_GetKeyboardState(NULL);
+	// Handle Paddle movement lPlayer
+	HandleLPaddleDirection(state);
+
+	// Handle escape
 	if (state[SDL_SCANCODE_ESCAPE])
 	{
 		mIsRunning = false;
@@ -100,6 +113,7 @@ void Game::UpdateGame()
 	mTicksCount = SDL_GetTicks();
 
 	// Todo: upd game objects in game world as a function of deltaTime
+	HandleLPaddleMovement(deltaTime);
 }
 
 void Game::GenerateOutput()
@@ -117,7 +131,7 @@ void Game::GenerateOutput()
 	
 	// Create walls
 	SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
-	const int thickness = 15;
+	
 	SDL_Rect wall = { 0, 0, 1024, thickness };
 	SDL_RenderFillRect(mRenderer, &wall);
 	// bottom
@@ -149,4 +163,38 @@ void Game::GenerateOutput()
 	SDL_RenderFillRect(mRenderer, &lPlayerPaddle);
 
 	SDL_RenderPresent(mRenderer);
+}
+
+void Game::HandleLPaddleDirection(const Uint8* kbState)
+{
+	mLPaddleDir = 0;
+	if (kbState[SDL_SCANCODE_W])
+	{
+		mLPaddleDir -= 1; // upwards aka -y
+	}
+	if (kbState[SDL_SCANCODE_S])
+	{
+		mLPaddleDir +=  1; // down aka +y
+	}
+}
+
+void Game::HandleLPaddleMovement(float deltaTime)
+{
+	if (mLPaddleDir != 0)
+	{
+		// add scalar of 300 pixels p/sec, note delTime is already in s
+		mPaddlePos.y += (mLPaddleDir * 300.0f * deltaTime);
+		// Add boundary conditions so the paddle does not move off screen:
+		// If top of paddle reaches y = 0 then prevent further upwards movement
+		// pad.y is middle of paddle so y must be less than half paddles height plus thickness of top border:
+	}
+	if (mPaddlePos.y < (paddleH / 2.0f + thickness))
+	{
+		// stop movement
+		mPaddlePos.y = (paddleH / 2.0f + thickness);
+	}
+	else if (mPaddlePos.y > (SCREEN_HEIGHT - thickness - paddleH / 2.0f))
+	{
+		mPaddlePos.y = (SCREEN_HEIGHT - thickness - paddleH / 2.0f);
+	}
 }
