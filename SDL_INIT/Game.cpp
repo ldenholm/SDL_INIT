@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <cstdlib>
 
 // Globals
 
@@ -14,12 +15,14 @@ Game::Game()
 	mIsRunning = true;
 	mWindow = NULL;
 	mRenderer = NULL;
-	mBallPos.x = 512.0f;
-	mBallPos.y = 384.0f;
-	mPaddlePos.x = 0.0f;
-	mPaddlePos.y = 384.0f;
 	mTicksCount = 0;
 	mLPaddleDir = 0;
+	mBallPos.x = 512.0f;
+	mBallPos.y = 384.0f;
+	mBallVel.x = -200.0f;
+	mBallVel.y = 235.0f;
+	mPaddlePos.x = 10.0f;
+	mPaddlePos.y = 384.0f;
 }
 
 bool Game::Initialize()
@@ -44,7 +47,6 @@ bool Game::Initialize()
 		SDL_Log("Error initializing renderer: %s", SDL_GetError());
 		return false;
 	}
-
 	return true;
 }
 
@@ -114,6 +116,7 @@ void Game::UpdateGame()
 
 	// Todo: upd game objects in game world as a function of deltaTime
 	HandleLPaddleMovement(deltaTime);
+	HandleBallMovement(deltaTime);
 }
 
 void Game::GenerateOutput()
@@ -158,7 +161,7 @@ void Game::GenerateOutput()
 		0,
 		static_cast<int>(mPaddlePos.y - 64),
 		thickness,
-		128
+		static_cast<int>(paddleH)
 	};
 	SDL_RenderFillRect(mRenderer, &lPlayerPaddle);
 
@@ -197,4 +200,39 @@ void Game::HandleLPaddleMovement(float deltaTime)
 	{
 		mPaddlePos.y = (SCREEN_HEIGHT - thickness - paddleH / 2.0f);
 	}
+}
+
+void Game::HandleBallMovement(float deltaTime)
+{
+	// Abs diff between y-pos of paddle and y-pos of ball:
+	float diff = abs(mPaddlePos.y - mBallPos.y);
+	// for collisions with the top and bottom of the paddle:
+	// ball x-pos must equal paddles x-pos
+	// if diff is less than or equal to paddle y-pos + half paddle height there is a collision
+	if ((diff <= paddleH / 2.0f) && mBallPos.x <= 25.0f && mBallPos.x >= 20.0f && mBallVel.x < 0.0f)
+	{
+		// inverse the x velocity:
+		mBallVel.x *= -1.0f;
+	}
+
+	mBallPos.x += mBallVel.x * deltaTime;
+	mBallPos.y += mBallVel.y * deltaTime;
+
+	// Handle top and bottom wall collisions
+	if (mBallPos.y <= thickness && mBallVel.y < 0.0f)
+	{
+		// inverse y component of velocity
+		mBallVel.y *= -1.0f;
+	}
+	if ((mBallPos.y >= (SCREEN_HEIGHT - thickness)) && (mBallVel.y > 0.0f))
+	{
+		mBallVel.y *= -1.0f;
+	}
+
+	// Handle right wall collision:
+	if (mBallPos.x >= (SCREEN_WIDTH - thickness) && mBallVel.x > 0.0f)
+	{
+		mBallVel.x *= -1.0f;
+	}
+
 }

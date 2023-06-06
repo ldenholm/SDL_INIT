@@ -20,6 +20,7 @@ private:
 	SDL_Renderer* mRenderer;
 	Vector2 mPaddlePos;
 	Vector2 mBallPos;
+	Vector2 mBallVel;
 	Uint32 mTicksCount;
 	int mLPaddleDir;
 
@@ -29,4 +30,5 @@ private:
 	void GenerateOutput();
 	void HandleLPaddleDirection(const Uint8* kbState);
 	void HandleLPaddleMovement(float deltaTime);
+	void HandleBallMovement(float deltaTime);
 };
