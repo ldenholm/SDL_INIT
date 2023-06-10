@@ -1,34 +1,28 @@
-#include <SDL.h>
+#ifndef __Game__
+#define __Game__
 
-struct Vector2
-{
-	float x;
-	float y;
-};
+#include <SDL.h>
 
 class Game
 {
 public:
 	Game();
-	bool Initialize();
-	void RunLoop();
-	void Shutdown();
+	~Game();
+	bool init(const char* title, int xpos, int ypos, int width, int height, int flags);
+	void render();
+	void update();
+	void handleEvents();
+	void clean();
+	bool running() { return mIsRunning; }
+	static const int SCREEN_WIDTH = 1024;
+	static const int SCREEN_HEIGHT = 768;
 
 private:
 	bool mIsRunning;
 	SDL_Window* mWindow;
 	SDL_Renderer* mRenderer;
-	Vector2 mPaddlePos;
-	Vector2 mBallPos;
-	Vector2 mBallVel;
 	Uint32 mTicksCount;
-	int mLPaddleDir;
 
-	// Helper functions for game loop:
-	void ProcessInput();
-	void UpdateGame();
-	void GenerateOutput();
-	void HandleLPaddleDirection(const Uint8* kbState);
-	void HandleLPaddleMovement(float deltaTime);
-	void HandleBallMovement(float deltaTime);
 };
+
+#endif // !__Game__

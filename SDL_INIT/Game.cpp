@@ -1,104 +1,62 @@
 #include "Game.h"
-#include <cstdlib>
-
-// Globals
-
-const int SCREEN_WIDTH = 1024;
-const int SCREEN_HEIGHT = 768;
-const int thickness = 15;
-const float paddleH = 128.0f;
-
-// Public Members
+#include <iostream>
 
 Game::Game()
 {
+	// init members variables
 	mIsRunning = true;
 	mWindow = NULL;
 	mRenderer = NULL;
 	mTicksCount = 0;
-	mLPaddleDir = 0;
-	mBallPos.x = 512.0f;
-	mBallPos.y = 384.0f;
-	mBallVel.x = -200.0f;
-	mBallVel.y = 235.0f;
-	mPaddlePos.x = 10.0f;
-	mPaddlePos.y = 384.0f;
 }
 
-bool Game::Initialize()
+Game::~Game()
 {
-	if (SDL_Init(SDL_INIT_VIDEO) != 0)
+}
+
+bool Game::init(const char* title, int xpos, int ypos, int width, int height, int flags)
+{
+	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
 	{
-		SDL_Log("Error initializing SDL: %s", SDL_GetError());
+		SDL_Log("Init success!");
+		
+		mWindow = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
+		if (mWindow)
+		{
+			SDL_Log("Window success!");
+			mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+			if (mRenderer)
+			{
+				SDL_Log("Renderer success!");
+				SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
+			}
+			else
+			{
+				SDL_Log("Failed to initialize Renderer");
+				return false;
+			}
+		}
+		else
+		{
+			SDL_Log("Failed to initialize Window");
+			return false;
+		}
+	}
+	else
+	{
+		printf("Failed to init. Error: %s", SDL_GetError());
 		return false;
 	}
 
-	mWindow = SDL_CreateWindow("Early Days v1", 200, 200, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
-	if (!mWindow)
-	{
-		SDL_Log("Error creating windows: %s", SDL_GetError());
-		return false;
-	}
-
-	// Enable GPU rendering and vsync
-	mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if (!mRenderer)
-	{
-		SDL_Log("Error initializing renderer: %s", SDL_GetError());
-		return false;
-	}
+	SDL_Log("Initialization completed succesfully");
+	mIsRunning = true;
 	return true;
 }
 
-void Game::RunLoop()
+
+void Game::update()
 {
-	while (mIsRunning)
-	{
-		ProcessInput();
-		UpdateGame();
-		GenerateOutput();
-	}
-}
-
-void Game::Shutdown()
-{
-	SDL_DestroyWindow(mWindow);
-	SDL_DestroyRenderer(mRenderer);
-	SDL_Quit();
-}
-
-// Private Members
-
-void Game::ProcessInput()
-{
-	// Capture keyboard state
-	const Uint8* state = SDL_GetKeyboardState(NULL);
-
-	// Handle events in the queue:
-	SDL_Event e;
-	while (SDL_PollEvent(&e))
-	{
-		switch (e.type)
-		{
-		case SDL_QUIT:
-			mIsRunning = false;
-			break;
-		}
-	}
-
-	// Handle Paddle movement lPlayer
-	HandleLPaddleDirection(state);
-
-	// Handle escape
-	if (state[SDL_SCANCODE_ESCAPE])
-	{
-		mIsRunning = false;
-	}
-}
-
-void Game::UpdateGame()
-{
-	// frame limiting ensuring ~16.6ms is used per frame:
+	// Frame limiting ensuring ~16.6ms is used per frame:
 	while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 16));
 
 	// Delta time = curentTicks - lastFrameTicks
@@ -115,11 +73,33 @@ void Game::UpdateGame()
 	mTicksCount = SDL_GetTicks();
 
 	// Todo: upd game objects in game world as a function of deltaTime
-	HandleLPaddleMovement(deltaTime);
-	HandleBallMovement(deltaTime);
 }
 
-void Game::GenerateOutput()
+void Game::handleEvents()
+{
+	SDL_Event e;
+	while (SDL_PollEvent(&e))
+	{
+		switch (e.type)
+		{
+		case SDL_QUIT:
+			mIsRunning = false;
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+void Game::clean()
+{
+	SDL_Log("Releasing resources");
+	SDL_DestroyWindow(mWindow);
+	SDL_DestroyRenderer(mRenderer);
+	SDL_Quit();
+}
+
+void Game::render()
 {
 	/*
 	* Graphics are an output, here are the steps:
@@ -128,111 +108,6 @@ void Game::GenerateOutput()
 	* - swap the front and back buffers for display to show new scene.
 	*/
 
-	// blue w/ 100% opacity.
-	SDL_SetRenderDrawColor(mRenderer, 237, 194, 242, 255);
 	SDL_RenderClear(mRenderer);
-	
-	// Create walls
-	SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
-	
-	SDL_Rect wall = { 0, 0, 1024, thickness };
-	SDL_RenderFillRect(mRenderer, &wall);
-	// bottom
-	wall.y = (768 - thickness);
-	SDL_RenderFillRect(mRenderer, &wall);
-	// right
-	wall.x = (1024 - thickness);
-	wall.y = 0;
-	wall.w = thickness;
-	wall.h = 768;
-	SDL_RenderFillRect(mRenderer, &wall);
-
-	// Draw Ball (for x&y / by half of thickness to account for its own width/height.
-	SDL_Rect ball = {
-		static_cast<int>(mBallPos.x - thickness / 2),
-		static_cast<int>(mBallPos.y - thickness / 2),
-		thickness,
-		thickness
-	};
-	SDL_RenderFillRect(mRenderer, &ball);
-
-	// Draw player1 paddle
-	SDL_Rect lPlayerPaddle = {
-		0,
-		static_cast<int>(mPaddlePos.y - 64),
-		thickness,
-		static_cast<int>(paddleH)
-	};
-	SDL_RenderFillRect(mRenderer, &lPlayerPaddle);
-
 	SDL_RenderPresent(mRenderer);
-}
-
-void Game::HandleLPaddleDirection(const Uint8* kbState)
-{
-	mLPaddleDir = 0;
-	if (kbState[SDL_SCANCODE_W])
-	{
-		mLPaddleDir -= 1; // upwards aka -y
-	}
-	if (kbState[SDL_SCANCODE_S])
-	{
-		mLPaddleDir +=  1; // down aka +y
-	}
-}
-
-void Game::HandleLPaddleMovement(float deltaTime)
-{
-	if (mLPaddleDir != 0)
-	{
-		// add scalar of 300 pixels p/sec, note delTime is already in s
-		mPaddlePos.y += (mLPaddleDir * 300.0f * deltaTime);
-		// Add boundary conditions so the paddle does not move off screen:
-		// If top of paddle reaches y = 0 then prevent further upwards movement
-		// pad.y is middle of paddle so y must be less than half paddles height plus thickness of top border:
-	}
-	if (mPaddlePos.y < (paddleH / 2.0f + thickness))
-	{
-		// stop movement
-		mPaddlePos.y = (paddleH / 2.0f + thickness);
-	}
-	else if (mPaddlePos.y > (SCREEN_HEIGHT - thickness - paddleH / 2.0f))
-	{
-		mPaddlePos.y = (SCREEN_HEIGHT - thickness - paddleH / 2.0f);
-	}
-}
-
-void Game::HandleBallMovement(float deltaTime)
-{
-	// Abs diff between y-pos of paddle and y-pos of ball:
-	float diff = abs(mPaddlePos.y - mBallPos.y);
-	// for collisions with the top and bottom of the paddle:
-	// ball x-pos must equal paddles x-pos
-	// if diff is less than or equal to paddle y-pos + half paddle height there is a collision
-	if ((diff <= paddleH / 2.0f) && mBallPos.x <= 25.0f && mBallPos.x >= 20.0f && mBallVel.x < 0.0f)
-	{
-		// inverse the x velocity:
-		mBallVel.x *= -1.0f;
-	}
-
-	mBallPos.x += mBallVel.x * deltaTime;
-	mBallPos.y += mBallVel.y * deltaTime;
-
-	// Handle top and bottom wall collisions
-	if (mBallPos.y <= thickness && mBallVel.y < 0.0f)
-	{
-		// inverse y component of velocity
-		mBallVel.y *= -1.0f;
-	}
-	if ((mBallPos.y >= (SCREEN_HEIGHT - thickness)) && (mBallVel.y > 0.0f))
-	{
-		mBallVel.y *= -1.0f;
-	}
-
-	// Handle right wall collision:
-	if (mBallPos.x >= (SCREEN_WIDTH - thickness) && mBallVel.x > 0.0f)
-	{
-		mBallVel.x *= -1.0f;
-	}
-
 }
