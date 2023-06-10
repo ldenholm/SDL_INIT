@@ -16,38 +16,32 @@ Game::~Game()
 
 bool Game::init(const char* title, int xpos, int ypos, int width, int height, int flags)
 {
-	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
-	{
-		SDL_Log("Init success!");
-		
-		mWindow = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
-		if (mWindow)
-		{
-			SDL_Log("Window success!");
-			mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-			if (mRenderer)
-			{
-				SDL_Log("Renderer success!");
-				SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
-			}
-			else
-			{
-				SDL_Log("Failed to initialize Renderer");
-				return false;
-			}
-		}
-		else
-		{
-			SDL_Log("Failed to initialize Window");
-			return false;
-		}
-	}
-	else
+	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
 		printf("Failed to init. Error: %s", SDL_GetError());
 		return false;
 	}
+	
+	SDL_Log("Init success!");
+	mWindow = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
+	
+	if (!mWindow)
+	{
+		SDL_Log("Failed to initialize Window");
+		return false;
+	}
 
+	SDL_Log("Window success!");
+	mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+	if (!mRenderer)
+	{
+		SDL_Log("Failed to initialize Renderer");
+		return false;
+	}
+
+	SDL_Log("Renderer success!");
+	SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
 	SDL_Log("Initialization completed succesfully");
 	mIsRunning = true;
 	return true;
