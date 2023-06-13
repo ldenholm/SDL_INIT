@@ -68,6 +68,42 @@
     <Image Include="media\Tiles.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="media\viking_walk.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="media\turtle_sheet.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="media\_down attack.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="media\_down idle.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="media\_down walk.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="media\_pick up.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="media\_side attack.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="media\_side idle.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="media\side_walk.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="media\_up attack.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="media\_up idle.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="media\_up walk.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">

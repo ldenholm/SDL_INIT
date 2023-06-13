@@ -36,8 +36,20 @@
     <Image Include="media\avatar.bmp" />
     <Image Include="media\Tiles.png" />
     <Image Include="media\title.bmp" />
+    <Image Include="media\turtle_sheet.png" />
+    <Image Include="media\viking_walk.png" />
     <Image Include="media\walk_east.bmp" />
     <Image Include="media\walk_west.bmp" />
+    <Image Include="media\_down attack.png" />
+    <Image Include="media\_down idle.png" />
+    <Image Include="media\_down walk.png" />
+    <Image Include="media\_pick up.png" />
+    <Image Include="media\_side attack.png" />
+    <Image Include="media\_side idle.png" />
+    <Image Include="media\side_walk.png" />
+    <Image Include="media\_up attack.png" />
+    <Image Include="media\_up idle.png" />
+    <Image Include="media\_up walk.png" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />

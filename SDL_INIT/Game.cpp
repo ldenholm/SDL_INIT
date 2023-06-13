@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <SDL_image.h>
 #include <iostream>
 
 Game::Game()
@@ -14,14 +15,19 @@ Game::~Game()
 {
 }
 
-bool Game::init(const char* title, int xpos, int ypos, int width, int height, int flags)
+bool Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen)
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
 		printf("Failed to init. Error: %s", SDL_GetError());
 		return false;
 	}
-	
+
+	int flags = 0;
+	if (fullscreen)
+	{
+		flags = SDL_WINDOW_FULLSCREEN;
+	}
 	SDL_Log("Init success!");
 	mWindow = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
 	
@@ -40,10 +46,34 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, in
 		return false;
 	}
 
+	// Init PNG Loading
+	int imgFlags = IMG_INIT_PNG;
+	if (!(IMG_Init(imgFlags) & imgFlags))
+	{
+		printf("SDL_Image Error: %s\n", IMG_GetError());
+		return false;
+	}
+
 	SDL_Log("Renderer success!");
 	SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
 	SDL_Log("Initialization completed succesfully");
 	mIsRunning = true;
+
+	// loading assets:
+	SDL_Surface* pTempSurface = IMG_Load("media/side_walk.png");
+	if (!pTempSurface)
+	{
+		printf("Image load error.\n %s", IMG_GetError());
+	}
+	mTexture = SDL_CreateTextureFromSurface(mRenderer, pTempSurface);
+	SDL_FreeSurface(pTempSurface);
+	// set the x & y offset
+	mSourceRect.x = mDestRect.x = 0;
+	mSourceRect.y = mDestRect.y = 0;
+	mSourceRect.w = mSourceRect.h = 64;
+	mDestRect.w = mSourceRect.w;
+	mDestRect.h = mSourceRect.h;
+
 	return true;
 }
 
@@ -67,6 +97,8 @@ void Game::update()
 	mTicksCount = SDL_GetTicks();
 
 	// Todo: upd game objects in game world as a function of deltaTime
+	// animate viking:
+	mSourceRect.x = mSourceRect.w * int(((SDL_GetTicks() / 100) % 4));
 }
 
 void Game::handleEvents()
@@ -103,5 +135,6 @@ void Game::render()
 	*/
 
 	SDL_RenderClear(mRenderer);
+	SDL_RenderCopy(mRenderer, mTexture, &mSourceRect, &mDestRect);
 	SDL_RenderPresent(mRenderer);
 }
