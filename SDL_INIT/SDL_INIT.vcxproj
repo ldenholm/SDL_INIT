@@ -32,6 +32,7 @@
     <Image Include="..\..\..\..\Downloads\04_key_presses\up.bmp" />
     <Image Include="media\attack.png" />
     <Image Include="media\Background_0.png" />
+    <Image Include="media\Drawings\RenderCentre.png" />
     <Image Include="media\ground_tiles.bmp" />
     <Image Include="media\avatar.bmp" />
     <Image Include="media\Tiles.png" />
