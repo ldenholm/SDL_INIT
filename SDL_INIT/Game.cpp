@@ -68,11 +68,13 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	mTexture = SDL_CreateTextureFromSurface(mRenderer, pTempSurface);
 	SDL_FreeSurface(pTempSurface);
 	// set the x & y offset
-	mSourceRect.x = mDestRect.x = 0;
-	mSourceRect.y = mDestRect.y = 0;
+	mSourceRect.x = 0;
+	mSourceRect.y = 0;
 	mSourceRect.w = mSourceRect.h = 64;
-	mDestRect.w = mSourceRect.w;
-	mDestRect.h = mSourceRect.h;
+	mDestRect.w = mDestRect.h = 128;
+	// Render sprite to center of screen:
+	mDestRect.x = (SCREEN_WIDTH / 2) - (mSourceRect.w / 2);
+	mDestRect.y = (SCREEN_HEIGHT / 2) - (mSourceRect.h / 2);
 
 	return true;
 }

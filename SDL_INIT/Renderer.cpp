@@ -108,38 +108,3 @@ void cleanup()
 	IMG_Quit();
 	SDL_Quit();
 }
-
-//int main(int argc, char* args[])
-//{
-//	if (!init())
-//	{
-//		printf("Failed to initialize: %s", SDL_GetError());
-//	}
-//
-//	if (!loadMedia())
-//	{
-//		printf("Failed to load graphics: %s", SDL_GetError());
-//	}
-//
-//	bool running = true;
-//	SDL_Event e;
-//
-//	while (running)
-//	{
-//		while (SDL_PollEvent(&e) != 0)
-//		{
-//			if (e.type == SDL_QUIT)
-//			{
-//				running = false;
-//			}
-//		}
-//
-//		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-//		SDL_RenderClear(gRenderer);
-//		//SDL_RenderCopy(gRenderer, gCurrent, NULL, NULL);
-//
-//		//SDL_RenderPresent(gRenderer);
-//	}
-//
-//	return 0;
-//}
